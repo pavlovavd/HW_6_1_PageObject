@@ -20,22 +20,14 @@ public class DashboardPage {
     private SelenideElement cartSelector2 = $("[data-test-id=0f3f5c2a-249e-4c3d-8287-09f7a039391d] button");
     private SelenideElement buttonSelector = $("button");
     private SelenideElement updateSelector = $("[data-test-id=\"action-reload\"]");
-    private static int sumFinal;
 
 
     public DashboardPage() {
         heading.shouldBe(visible);
     }
 
-    public int getFirstCardBalance() {
-        val text = cardsSelector.first().text();
-        buttonSelector.click();
-        return extractBalance(text);
-    }
-
-    public int getSecondCardBalance() {
-        val text = cardsSelector.last().text();
-        buttonSelector.click();
+    public int getCardBalance(String id) {
+        val text = cardsSelector.find(attribute("data-test-id", id)).text();
         return extractBalance(text);
     }
 
@@ -47,12 +39,12 @@ public class DashboardPage {
     }
 
     public TransferPage cardOneDeposit() {
-        cartSelector1.doubleClick();
+        cartSelector1.click();
         return new TransferPage();
     }
 
     public TransferPage cardTwoDeposit() {
-        cartSelector2.doubleClick();
+        cartSelector2.click();
         return new TransferPage();
     }
 
