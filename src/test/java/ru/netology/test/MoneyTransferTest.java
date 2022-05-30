@@ -21,19 +21,19 @@ public class MoneyTransferTest {
         var authInfo = DataHelper.getAuthInfo();
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
-        verificationPage.validVerify(verificationCode);
+        var dashboardPage= verificationPage.validVerify(verificationCode);
         var cardInfoOne = DataHelper.getCardNumber1();
         var cardInfoTwo = DataHelper.getCardNumber2();
+
         int amount = 2000;
+        int expectedBalanceFistCard = dashboardPage.getCardBalance("92df3f1c-a033-48e6-8390-206f6b1f56c0") - amount;
+        int expectedBalanceSecondCard = dashboardPage.getCardBalance("0f3f5c2a-249e-4c3d-8287-09f7a039391d") + amount;
 
-        int expectedBalanceFistCard = cardInfoOne.getBalance() + amount;
-        int expectedBalanceSecondCard = cardInfoTwo.getBalance() - amount;
-        int actualBalanceCardOne = DataHelper.getCardNumber1().getBalance();
-        int actualBalanceCardTwo = DataHelper.getCardNumber2().getBalance();
+        var transferPage = dashboardPage.cartOneDeposit();
+        transferPage.transfer(amount, DataHelper.getCardNumber1());
 
-        var moneyTransferPage = new TransferPage();
-        moneyTransferPage.cardSelection(cardInfoOne.getIdCard());
-        moneyTransferPage.transfer(2000, cardInfoTwo.getNumber());
+        int actualBalanceCardOne = dashboardPage.getCardBalance("92df3f1c-a033-48e6-8390-206f6b1f56c0");
+        int actualBalanceCardTwo = dashboardPage.getCardBalance("0f3f5c2a-249e-4c3d-8287-09f7a039391d");
 
         assertEquals(expectedBalanceFistCard, actualBalanceCardOne);
         assertEquals(expectedBalanceSecondCard, actualBalanceCardTwo);
@@ -46,22 +46,14 @@ public class MoneyTransferTest {
         var authInfo = DataHelper.getAuthInfo();
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
-        verificationPage.validVerify(verificationCode);
+        var dashboardPage= verificationPage.validVerify(verificationCode);
         var cardInfoOne = DataHelper.getCardNumber1();
         var cardInfoTwo = DataHelper.getCardNumber2();
+        var transferPage = dashboardPage.cartTwoDeposit();
         int amount = 0;
+        transferPage.transfer(amount, DataHelper.getCardNumber2());
+        transferPage.zeroTransfer();
 
-        int expectedBalanceFistCard = cardInfoOne.getBalance() + amount;
-        int expectedBalanceSecondCard = cardInfoTwo.getBalance() - amount;
-        int actualBalanceCardOne = DataHelper.getCardNumber1().getBalance();
-        int actualBalanceCardTwo = DataHelper.getCardNumber2().getBalance();
-
-        var moneyTransferPage = new TransferPage();
-        moneyTransferPage.cardSelection(cardInfoOne.getIdCard());
-        moneyTransferPage.transfer(0, cardInfoTwo.getNumber());
-
-        assertEquals(expectedBalanceFistCard, actualBalanceCardOne);
-        assertEquals(expectedBalanceSecondCard, actualBalanceCardTwo);
     }
 
     @Test
@@ -71,21 +63,17 @@ public class MoneyTransferTest {
         var authInfo = DataHelper.getAuthInfo();
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
-        verificationPage.validVerify(verificationCode);
+        var dashboardPage=  verificationPage.validVerify(verificationCode);
         var cardInfoOne = DataHelper.getCardNumber1();
         var cardInfoTwo = DataHelper.getCardNumber2();
+
+        var transferPage = dashboardPage.cartTwoDeposit();
         int amount = 20000;
+        transferPage.transfer(amount, DataHelper.getCardNumber1());
+        transferPage.failTransfer();
 
-        int expectedBalanceFistCard = cardInfoOne.getBalance() + amount;
-        int expectedBalanceSecondCard = cardInfoTwo.getBalance() - amount;
-        int actualBalanceCardOne = DataHelper.getCardNumber1().getBalance();
-        int actualBalanceCardTwo = DataHelper.getCardNumber2().getBalance();
 
-        var moneyTransferPage = new TransferPage();
-        moneyTransferPage.cardSelection(cardInfoOne.getIdCard());
-        moneyTransferPage.transfer(20000, cardInfoTwo.getNumber());
 
-        assertEquals(expectedBalanceFistCard, actualBalanceCardOne);
-        assertEquals(expectedBalanceSecondCard, actualBalanceCardTwo);
+
     }
 }

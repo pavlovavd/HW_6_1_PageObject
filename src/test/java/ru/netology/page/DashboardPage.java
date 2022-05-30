@@ -12,15 +12,16 @@ import static com.codeborne.selenide.Selenide.$$;
 
 public class DashboardPage {
 
+    private SelenideElement heading = $("[data-test-id=dashboard]");
     private ElementsCollection cardsSelector = $$(".list__item div");
     private final String balanceStart = "баланс: ";
     private final String balanceFinish = " р.";
-    private SelenideElement heading = $("[data-test-id=dashboard]");
-    private SelenideElement cartSelector1 = $("[data-test-id=92df3f1c-a033-48e6-8390-206f6b1f56c0] button");
-    private SelenideElement cartSelector2 = $("[data-test-id=0f3f5c2a-249e-4c3d-8287-09f7a039391d] button");
-    private SelenideElement buttonSelector = $("button");
-    private SelenideElement updateSelector = $("[data-test-id=\"action-reload\"]");
 
+    private  SelenideElement firstButton = $$("[data-test-id=action-deposit]").first();
+    private  SelenideElement secondButton = $$("[data-test-id=action-deposit]").last();
+
+//    private SelenideElement buttonSelector = $("button");
+//    private SelenideElement updateSelector = $("[data-test-id=\"action-reload\"]");
 
     public DashboardPage() {
         heading.shouldBe(visible);
@@ -38,14 +39,13 @@ public class DashboardPage {
         return Integer.parseInt(value);
     }
 
-    public TransferPage cardOneDeposit() {
-        cartSelector1.click();
+    public TransferPage cartOneDeposit() {
+        firstButton.click();
         return new TransferPage();
     }
 
-    public TransferPage cardTwoDeposit() {
-        cartSelector2.click();
+    public TransferPage cartTwoDeposit() {
+        secondButton.click();
         return new TransferPage();
     }
-
 }

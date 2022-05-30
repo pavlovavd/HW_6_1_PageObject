@@ -1,10 +1,12 @@
 package ru.netology.page;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import ru.netology.data.DataHelper;
 
 import static com.codeborne.selenide.Condition.attribute;
+import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.*;
 
 public class TransferPage {
@@ -13,21 +15,20 @@ public class TransferPage {
     private SelenideElement from = $("[data-test-id=from] input");
     private SelenideElement button = $("[data-test-id=action-transfer]");
     private SelenideElement cancelButton = $("[data-test-id=action-cancel]");
-    private ElementsCollection rechargeButton = $$(".list__item div");
 
-
-    public void cardSelection(String inCard) {
-        rechargeButton.find(attribute("data-test-id", inCard)).find(".button__content").click();
-    }
-
-    public DashboardPage transfer (int amountTransfer, String numberCardOut) {
+    public DashboardPage transfer (int amountTransfer, DataHelper.CardInfo cardInfo) {
         amount.setValue(String.valueOf(amountTransfer));
-        from.setValue(numberCardOut);
-        button.click();
+        from.setValue(cardInfo.getNumber());
+        button.doubleClick();
         return new DashboardPage();
     }
 
+    public void failTransfer() {
+        $(withText("Недостаточно средств для перевода")).shouldBe(Condition.visible);
+    }
 
 
-
+    public void zeroTransfer() {
+        $(withText("Неверно введена сумма, минимальная сумма перевода 1 руб")).shouldBe(Condition.visible);
+    }
 }
